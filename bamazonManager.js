@@ -45,8 +45,6 @@ function managerTasks() {
 
             connection.end(function(err) {
                 // The connection is terminated gracefully
-                // Ensures all previously enqueued queries are still
-                // before sending a COM_QUIT packet to the MySQL server.
             });
 
         }
@@ -59,7 +57,7 @@ function viewProducts() {
         for (var i = 0; i < res.length; i++) {
             console.log(res[i].item_id + '. ' + res[i].product_name + ' | ' + res[i].department_name + ' | ' + '$' +
                 res[i].price + ' | ' + res[i].stock_quantity);
-            console.log('-------------------------');
+            console.log('----------------------------------------------------------');
         }
 
     });
@@ -73,7 +71,7 @@ function viewLowInventory() {
         for (var i = 0; i < res.length; i++) {
             console.log(res[i].item_id + '. ' + res[i].product_name + ' | ' + res[i].department_name + ' | ' + '$' +
                 res[i].price + ' | ' + res[i].stock_quantity);
-            console.log('-------------------------');
+            console.log('----------------------------------------------------------');
         }
 
     })
@@ -109,14 +107,17 @@ var addToInventory = function() {
                         connection.query("UPDATE products SET ? WHERE ?", [{
                             stock_quantity: total
                         }, {
-                            item_id: chosenItem.item_id
+                            product_name: chosenItem.product_name
                         }], function(err, res) {
+                            if (err) {
+                                throw err;
+                            } else {
+                                const maybePluralize = (count, noun, suffix = 's') =>
+                                    `${count} ${noun}${count !== 1 && noun.charAt(noun.length-1)!== 's'? suffix : ''}`;
+                                console.log("You now have " + maybePluralize(total, chosenItem.product_name) + ' in stock.');
 
-                            const maybePluralize = (count, noun, suffix = 's') =>
-                                `${count} ${noun}${count !== 1 && noun.charAt(noun.length-1)!== 's'? suffix : ''}`;
-                            console.log("You now have " + maybePluralize(total, chosenItem.product_name) + ' in stock.');
-
-                            managerTasks();
+                                managerTasks();
+                            }
                         });
 
                     })
