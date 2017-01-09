@@ -50,12 +50,14 @@ var buyStuff = function() {
                             buyStuff();
 
                         } else {
+                            var total = chosenItem.price * parseInt(answer.quantity);
                             connection.query("UPDATE products SET ? WHERE ?", [{
-                                stock_quantity: chosenItem.stock_quantity - parseInt(answer.quantity)
+                                stock_quantity: chosenItem.stock_quantity - parseInt(answer.quantity),
+                                product_sales: chosenItem.product_sales + total
                             }, {
                                 item_id: chosenItem.item_id
                             }], function(err, res) {
-                                var total = chosenItem.price * parseInt(answer.quantity);
+
                                 const maybePluralize = (count, noun, suffix = 's') =>
                                     `${count} ${noun}${count !== 1 && noun.charAt(noun.length-1)!== 's'? suffix : ''}`;
                                 console.log("You have bought " + maybePluralize(parseInt(answer.quantity), chosenItem.product_name));
@@ -86,11 +88,10 @@ function taskChoice() {
             buyStuff();
 
         } else {
-            console.log('Thank you for shopping at Bamazon!');
+            console.log('Thank you for shopping at Bamazon, and have a super day!');
             connection.end(function(err) {
                 // The connection is terminated gracefully
-                // Ensures all previously enqueued queries are still
-                // before sending a COM_QUIT packet to the MySQL server.
+
             });
 
         }

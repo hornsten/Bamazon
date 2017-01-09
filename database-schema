@@ -10,3 +10,11 @@ price DECIMAL(10,2),
 stock_quantity INT NULL,
 PRIMARY KEY (item_id)
 );
+
+CREATE TABLE departments (
+department_id INT auto_increment NOT NULL,
+department_name VARCHAR(250) NULL,
+over_head_costs DECIMAL(10,2),
+total_sales DECIMAL(10,2),
+PRIMARY KEY (department_id)
+);
