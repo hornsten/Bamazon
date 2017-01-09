@@ -49,7 +49,6 @@ var buyStuff = function() {
                             buyStuff();
 
                         } else {
-
                             connection.query("UPDATE products SET ? WHERE ?", [{
                                 stock_quantity: chosenItem.stock_quantity - parseInt(answer.quantity)
                             }, {
@@ -57,7 +56,7 @@ var buyStuff = function() {
                             }], function(err, res) {
                                 var total = chosenItem.price * parseInt(answer.quantity);
                                 console.log("Your total is $" + total);
-
+                                buyStuff();
                             });
                         }
                     })
@@ -73,8 +72,8 @@ buyStuff();
 //     console.log(res);
 // })
 
-connection.end(function(err) {
-    // The connection is terminated gracefully
-    // Ensures all previously enqueued queries are still
-    // before sending a COM_QUIT packet to the MySQL server.
-});
+// connection.end(function(err) {
+//     // The connection is terminated gracefully
+//     // Ensures all previously enqueued queries are still
+//     // before sending a COM_QUIT packet to the MySQL server.
+// });
