@@ -19,7 +19,7 @@ connection.connect(function(err) {
 });
 
 var buyStuff = function() {
-    connection.query("SELECT item_id,product_name,department_name,price FROM products", function(err, res) {
+    connection.query("SELECT * FROM products", function(err, res) {
 
         inquirer.prompt({
             name: "products",
@@ -27,38 +27,43 @@ var buyStuff = function() {
             choices: function(value) {
                 var productsArray = [];
                 for (var i = 0; i < res.length; i++) {
-                    productsArray.push(res[i].product_name + '|' + res[i].department_name + '|' + '$' + res[i].price);
+                    productsArray.push(res[i].product_name);
                 }
                 return productsArray;
             },
             message: "What is the ID of the product you would like to buy?"
         }).then(function(answer) {
-            console.log('done!');
-            // for (var i = 0; i < res.length; i++) {
-            //     if (res[i].item_id !== answer.products) {
-            //         var chosenItem = res[i];
-            //         inquirer.prompt({
-            //             name: quantity,
-            //             type: input,
-            //             message: "How many units would you like to buy?"
-            //         }).then(function(answer) {
-            //             if (chosenItem.stock_quantity < parseInt(answer.quantity)) {
-            //                 console.log("Sorry, we don't have enough in stock.");
-            //                 buyStuff();
-            //             } else {
-            //                 connection.query("UPDATE products SET ? WHERE ?", [{
-            //                     stock_quantity: answer.quantity
-            //                 }, {
-            //                     item_id: chosenItem.item_id
-            //                 }], function(err, res) {
-            //                     var total = chosenItem.price * parseInt(answer.quantity);
-            //                     console.log("Your total is $" + total);
+            for (var i = 0; i < res.length; i++) {
 
-            //                 });
-            //             }
-            //         })
-            //     }
-            // }
+                if (res[i].product_name === answer.products) {
+                    var chosenItem = res[i];
+                    inquirer.prompt({
+                        name: "quantity",
+                        type: "input",
+                        message: "How many units would you like to buy?"
+                    }).then(function(answer) {
+                        console.log("This is the quantity I want: " + answer.quantity);
+                        console.log("This is the quantity available: " + chosenItem.stock_quantity);
+                        if (chosenItem.stock_quantity < parseInt(answer.quantity)) {
+                            console.log("Sorry, we don't have enough in stock.");
+                            buyStuff();
+
+                        } else {
+
+                            connection.query("UPDATE products SET ? WHERE ?", [{
+                                stock_quantity: chosenItem.stock_quantity - parseInt(answer.quantity)
+                            }, {
+                                item_id: chosenItem.item_id
+                            }], function(err, res) {
+                                var total = chosenItem.price * parseInt(answer.quantity);
+                                console.log("Your total is $" + total);
+
+                            });
+                        }
+                    })
+                }
+
+            }
         })
     })
 }
