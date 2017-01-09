@@ -16,6 +16,8 @@ var connection = mysql.createConnection({
 connection.connect(function(err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
+    console.log('Welcome to Bamazon!');
+    buyStuff();
 });
 
 var buyStuff = function() {
@@ -42,10 +44,9 @@ var buyStuff = function() {
                         type: "input",
                         message: "How many units would you like to buy?"
                     }).then(function(answer) {
-                        console.log("This is the quantity I want: " + answer.quantity);
-                        console.log("This is the quantity available: " + chosenItem.stock_quantity);
+
                         if (chosenItem.stock_quantity < parseInt(answer.quantity)) {
-                            console.log("Sorry, we don't have enough in stock.");
+                            console.log("Sorry, we only have " + chosenItem.stock_quantity + " of those in stock.");
                             buyStuff();
 
                         } else {
@@ -55,8 +56,11 @@ var buyStuff = function() {
                                 item_id: chosenItem.item_id
                             }], function(err, res) {
                                 var total = chosenItem.price * parseInt(answer.quantity);
+                                const maybePluralize = (count, noun, suffix = 's') =>
+                                    `${count} ${noun}${count !== 1 && noun.charAt(noun.length-1)!== 's'? suffix : ''}`;
+                                console.log("You have bought " + maybePluralize(parseInt(answer.quantity), chosenItem.product_name));
                                 console.log("Your total is $" + total);
-                                buyStuff();
+                                taskChoice();
                             });
                         }
                     })
@@ -66,14 +70,29 @@ var buyStuff = function() {
         })
     })
 }
-buyStuff();
-// connection.query("SELECT * FROM products", function(err, res) {
 
-//     console.log(res);
-// })
+function taskChoice() {
+    inquirer.prompt([{
 
-// connection.end(function(err) {
-//     // The connection is terminated gracefully
-//     // Ensures all previously enqueued queries are still
-//     // before sending a COM_QUIT packet to the MySQL server.
-// });
+            type: 'list',
+            name: 'task',
+            message: 'What would you like to do?',
+            choices: ['buy-stuff', 'quit']
+        }
+
+    ]).then(function(choice) {
+
+        if (choice.task === 'buy-stuff') {
+            buyStuff();
+
+        } else {
+            console.log('Thank you for shopping at Bamazon!');
+            connection.end(function(err) {
+                // The connection is terminated gracefully
+                // Ensures all previously enqueued queries are still
+                // before sending a COM_QUIT packet to the MySQL server.
+            });
+
+        }
+    });
+}
