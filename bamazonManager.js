@@ -103,26 +103,22 @@ var addToInventory = function() {
                         name: "quantity",
                         type: "input",
                         message: "You currently have " + chosenItem.stock_quantity + " of that item. How many units would you like to add?"
-                    }).then(function(answer) {
+                    }).then(function(ans) {
 
-                        if (parseInt(answer.quantity) < 1) {
-                            console.log("Please add at least one");
-                            addToInventory();
+                        var total = chosenItem.stock_quantity + parseInt(ans.quantity);
+                        connection.query("UPDATE products SET ? WHERE ?", [{
+                            stock_quantity: total
+                        }, {
+                            item_id: chosenItem.item_id
+                        }], function(err, res) {
 
-                        } else {
-                            connection.query("UPDATE products SET ? WHERE ?", [{
-                                stock_quantity: chosenItem.stock_quantity + parseInt(answer.quantity)
-                            }, {
-                                item_id: chosenItem.item_id
-                            }], function(err, res) {
-                                var total = chosenItem.stock_quantity + parseInt(answer.quantity);
-                                const maybePluralize = (count, noun, suffix = 's') =>
-                                    `${count} ${noun}${count !== 1 && noun.charAt(noun.length-1)!== 's'? suffix : ''}`;
-                                console.log("You now have " + maybePluralize(total, chosenItem.product_name) + ' in stock.');
+                            const maybePluralize = (count, noun, suffix = 's') =>
+                                `${count} ${noun}${count !== 1 && noun.charAt(noun.length-1)!== 's'? suffix : ''}`;
+                            console.log("You now have " + maybePluralize(total, chosenItem.product_name) + ' in stock.');
 
-                                managerTasks();
-                            });
-                        }
+                            managerTasks();
+                        });
+
                     })
                 }
 
@@ -133,5 +129,48 @@ var addToInventory = function() {
 
 
 function addNewProduct() {
+    inquirer.prompt([{
+        name: "product",
+        type: "input",
+        message: "What product would you like to add?"
+    }, {
+        name: "department",
+        type: "input",
+        message: "In which department does the item belong?"
+    }, {
+        name: "price",
+        type: "input",
+        message: "What is the price per unit?",
+        validate: function(value) {
+            if (isNaN(value) === false) {
+                return true;
+            }
+            return false;
+        }
+    }, {
+        name: "quantity",
+        type: "input",
+        message: "How many units would you like to add?",
+        validate: function(value) {
+            if (isNaN(value) === false) {
+                return true;
+            }
+            return false;
+        }
+
+    }]).then(function(answer) {
+        connection.query("INSERT INTO products SET ?", {
+            product_name: answer.product,
+            department_name: answer.department,
+            price: answer.price,
+            stock_quantity: answer.quantity
+        }, function(err, res) {
+            if (err) {
+                throw err;
+            }
+            console.log("Your product was added successfully!");
+            managerTasks();
+        });
+    });
 
 };
