@@ -51,6 +51,7 @@ var buyStuff = function() {
 
                         } else {
                             var total = chosenItem.price * parseInt(answer.quantity);
+
                             connection.query("UPDATE products SET ? WHERE ?", [{
                                 stock_quantity: chosenItem.stock_quantity - parseInt(answer.quantity),
                                 product_sales: chosenItem.product_sales + total
@@ -62,8 +63,17 @@ var buyStuff = function() {
                                     `${count} ${noun}${count !== 1 && noun.charAt(noun.length-1)!== 's'? suffix : ''}`;
                                 console.log("You have bought " + maybePluralize(parseInt(answer.quantity), chosenItem.product_name));
                                 console.log("Your total is $" + total);
-                                taskChoice();
+
                             });
+
+                            connection.query("UPDATE departments SET departments.total_sales = (SELECT SUM(products.product_sales) FROM products WHERE departments.department_name=products.department_name)",
+                                function(err, res) {
+                                    if (err) {
+                                        throw err;
+                                    }
+                                    console.log(res);
+                                });
+                            taskChoice();
                         }
                     })
                 }
