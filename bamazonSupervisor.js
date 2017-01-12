@@ -84,11 +84,22 @@ function createNewDepartment() {
             }
             return false;
         }
+    }, {
+        name: "total",
+        type: "input",
+        message: "What are the total sales?",
+        validate: function(value) {
+            if (isNaN(value) === false) {
+                return true;
+            }
+            return false;
+        }
 
     }]).then(function(answer) {
         connection.query("INSERT INTO departments SET ?", {
             department_name: answer.department,
-            over_head_costs: answer.costs
+            over_head_costs: answer.costs,
+            total_sales: answer.total
         }, function(err, res) {
             if (err) throw err;
             console.log("The department was added successfully.");
