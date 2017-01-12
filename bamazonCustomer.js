@@ -66,13 +66,12 @@ var buyStuff = function() {
 
                             });
 
-                            connection.query("UPDATE departments SET departments.total_sales = (SELECT SUM(products.product_sales) FROM products WHERE departments.department_name=products.department_name)",
+                            connection.query("UPDATE departments SET departments.total_sales = (SELECT SUM(products.product_sales) FROM products WHERE departments.department_name = products.department_name)",
                                 function(err, res) {
-                                    if (err) {
-                                        throw err;
-                                    }
-                                    console.log(res);
+                                    if (err) throw err;
+                                    console.log("total added to department sales");
                                 });
+
                             taskChoice();
                         }
                     })

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/hornsten/Bamazon#readme",
   "dependencies": {
+    "cli-table": "^0.3.1",
     "inquirer": "^2.0.0",
     "mysql": "^2.12.0"
   }

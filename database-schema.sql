@@ -12,9 +12,13 @@ PRIMARY KEY (item_id)
 );
 
 CREATE TABLE departments (
-department_id INT,
+department_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY_KEY,
 department_name VARCHAR(250) NOT NULL,
 over_head_costs DECIMAL(10,2),
-total_sales DECIMAL(10,2),
-PRIMARY KEY (department_name)
+total_sales DECIMAL(10,2)
 );
+
+INSERT INTO departments VALUES 
+(NULL, 'Shoes', 88.12, 0.00),
+(NULL, 'Swimwear', 12.12, 0.00);
+
