@@ -72,34 +72,28 @@ function createNewDepartment() {
     inquirer.prompt([{
         name: "department",
         type: "input",
-        message: "What is the department name?"
+        message: "What is the department name?",
+        validate: function(value) {
+            if (value.length > 0) {
+                return true;
+            }
+            return false;
+        }
     }, {
 
         name: "costs",
         type: "input",
         message: "What are the overhead costs?",
         validate: function(value) {
-            if (isNaN(value) === false && value !== 0) {
+            if (isNaN(value) === false && value !== 0 && value.length > 0) {
                 return true;
             }
             return false;
         }
-    }, {
-        name: "total",
-        type: "input",
-        message: "What are the total sales?",
-        validate: function(value) {
-            if (isNaN(value) === false) {
-                return true;
-            }
-            return false;
-        }
-
     }]).then(function(answer) {
         connection.query("INSERT INTO departments SET ?", {
             department_name: answer.department,
-            over_head_costs: answer.costs,
-            total_sales: answer.total
+            over_head_costs: answer.costs
         }, function(err, res) {
             if (err) throw err;
             console.log("The department was added successfully.");

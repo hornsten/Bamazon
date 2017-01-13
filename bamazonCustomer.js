@@ -25,7 +25,7 @@ var buyStuff = function() {
 
         inquirer.prompt({
             name: "products",
-            type: "rawlist",
+            type: "list",
             choices: function(value) {
                 var productsArray = [];
                 for (var i = 0; i < res.length; i++) {
@@ -33,7 +33,7 @@ var buyStuff = function() {
                 }
                 return productsArray;
             },
-            message: "What is the ID of the product you would like to buy?"
+            message: "Which product you would like to buy?"
         }).then(function(answer) {
             for (var i = 0; i < res.length; i++) {
 
