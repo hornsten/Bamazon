@@ -9,7 +9,7 @@ var connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "seville",
+    password: "sevilla",
     database: "Bamazon"
 });
 
@@ -59,9 +59,9 @@ function viewProducts() {
                 res[i].price + ' | ' + res[i].stock_quantity);
             console.log('----------------------------------------------------------');
         }
-
+        managerTasks();
     });
-    managerTasks();
+
 };
 
 function viewLowInventory() {
@@ -73,9 +73,9 @@ function viewLowInventory() {
                 res[i].price + ' | ' + res[i].stock_quantity);
             console.log('----------------------------------------------------------');
         }
-
+        managerTasks();
     })
-    managerTasks();
+
 };
 
 var addToInventory = function() {

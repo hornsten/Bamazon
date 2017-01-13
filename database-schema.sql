@@ -6,7 +6,7 @@ CREATE TABLE products (
 item_id INT auto_increment NOT NULL,
 product_name VARCHAR(250) NULL,
 department_name VARCHAR(250) NULL,
-price DECIMAL(10,2),
+price DECIMAL(10,2) NOT NULL,
 stock_quantity INT NULL,
 PRIMARY KEY (item_id)
 );

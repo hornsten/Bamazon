@@ -9,7 +9,7 @@ var connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "seville",
+    password: "sevilla",
     database: "Bamazon"
 });
 
@@ -59,19 +59,30 @@ var buyStuff = function() {
                                 item_id: chosenItem.item_id
                             }], function(err, res) {
 
-                                const maybePluralize = (count, noun, suffix = 's') =>
-                                    `${count} ${noun}${count !== 1 && noun.charAt(noun.length-1)!== 's'? suffix : ''}`;
-                                console.log("You have bought " + maybePluralize(parseInt(answer.quantity), chosenItem.product_name));
-                                console.log("Your total is $" + total);
-
                             });
 
-                            connection.query("UPDATE departments SET departments.total_sales = (SELECT SUM(products.product_sales) FROM products WHERE departments.department_name = products.department_name)",
-                                function(err, res) {
-                                    if (err) throw err;
-                                    console.log("total added to department sales");
-                                });
+                            connection.query("SELECT total_sales,department_name FROM departments", function(err, res) {
+                                for (var i = 0; i < res.length; i++) {
+                                    if (res[i].department_name === chosenItem.department_name) {
+                                        var prevTotal = res[i].total_sales;
+                                        var sumSales = prevTotal + total;
+                                        var departmentName = chosenItem.department_name;
 
+                                        connection.query("UPDATE departments SET ? WHERE ?", [{
+
+                                            total_sales: sumSales
+                                        }, {
+                                            department_name: departmentName
+
+                                        }])
+                                    }
+                                }
+                            })
+
+                            const maybePluralize = (count, noun, suffix = 's') =>
+                                `${count} ${noun}${count !== 1 && noun.charAt(noun.length-1)!== 's'? suffix : ''}`;
+                            console.log("You have bought " + maybePluralize(parseInt(answer.quantity), chosenItem.product_name));
+                            console.log("Your total is $" + total);
                             taskChoice();
                         }
                     })
@@ -81,6 +92,8 @@ var buyStuff = function() {
         })
     })
 }
+
+
 
 function taskChoice() {
     inquirer.prompt([{

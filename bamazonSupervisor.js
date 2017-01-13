@@ -10,7 +10,7 @@ var connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "seville",
+    password: "sevilla",
     database: "Bamazon"
 });
 
@@ -79,7 +79,7 @@ function createNewDepartment() {
         type: "input",
         message: "What are the overhead costs?",
         validate: function(value) {
-            if (isNaN(value) === false) {
+            if (isNaN(value) === false && value !== 0) {
                 return true;
             }
             return false;
