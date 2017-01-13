@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var password = require("./password");
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -9,7 +10,7 @@ var connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "sevilla",
+    password: password,
     database: "Bamazon"
 });
 
@@ -50,7 +51,7 @@ function managerTasks() {
         }
     });
 }
-
+//Displays current products in store
 function viewProducts() {
     connection.query("SELECT * FROM products", function(err, res) {
         console.log('\n');
@@ -63,7 +64,7 @@ function viewProducts() {
     });
 
 };
-
+//Checks for products with fewer than five units in stock
 function viewLowInventory() {
 
     connection.query("SELECT * FROM products WHERE stock_quantity < 5", function(err, res) {
@@ -77,7 +78,7 @@ function viewLowInventory() {
     })
 
 };
-
+//Allows manager to add more units to inventory
 var addToInventory = function() {
     connection.query("SELECT product_name,stock_quantity FROM products", function(err, res) {
 
@@ -128,7 +129,7 @@ var addToInventory = function() {
     })
 }
 
-
+//Allows manager to add a new product
 function addNewProduct() {
     inquirer.prompt([{
         name: "product",
@@ -143,7 +144,7 @@ function addNewProduct() {
         type: "input",
         message: "What is the price per unit?",
         validate: function(value) {
-            if (isNaN(value) === false) {
+            if (isNaN(value) === false && value.length > 0) {
                 return true;
             }
             return false;
@@ -153,7 +154,7 @@ function addNewProduct() {
         type: "input",
         message: "How many units would you like to add?",
         validate: function(value) {
-            if (isNaN(value) === false) {
+            if (isNaN(value) === false && value.length > 0) {
                 return true;
             }
             return false;

@@ -1,6 +1,7 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var Table = require('cli-table');
+var password = require("./password");
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -10,7 +11,7 @@ var connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "sevilla",
+    password: password,
     database: "Bamazon"
 });
 
@@ -49,16 +50,17 @@ function taskChoice() {
 }
 
 function viewProductSales() {
+    //Using an alias, this query creates a new column on the fly to reflect the actual total profits of Bamazon by department (total sales - overhead costs)
     connection.query("SELECT total_sales - over_head_costs AS total_profit,department_id,department_name,over_head_costs,total_sales FROM departments", function(err, res) {
 
-        // instantiate 
+        // instantiates the table object
         var table = new Table({
             head: ['ID', 'department_name', 'over_head_costs', 'total_sales', 'total_profit'],
             colWidths: [5, 20, 20, 20, 20]
         });
 
         for (var i = 0; i < res.length; i++) {
-            // table is an Array, so you can `push`, `unshift`, `splice` and friends 
+            // pushes the query results into the table
             table.push(
                 [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].total_sales, res[i].total_profit]
             );
@@ -67,7 +69,7 @@ function viewProductSales() {
         taskChoice();
     });
 }
-
+//allows Supervisor to create a new department. In the schema, default value for total sales is set to zero
 function createNewDepartment() {
     inquirer.prompt([{
         name: "department",
