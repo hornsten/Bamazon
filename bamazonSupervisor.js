@@ -62,7 +62,7 @@ function viewProductSales() {
         for (var i = 0; i < res.length; i++) {
             // pushes the query results into the table
             table.push(
-                [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].total_sales, res[i].total_profit]
+                [res[i].department_id, res[i].department_name, res[i].over_head_costs.toFixed(2), res[i].total_sales.toFixed(2), res[i].total_profit.toFixed(2)]
             );
         }
         console.log(table.toString());
