@@ -3,11 +3,20 @@ An Amazon-like storefront node app incorporating MySQL
 
 ## Table of Contents
 
+- [To Install](#to-install)
 - [Customer Mode](#customer-mode)
 - [Manager Mode](#manager-mode)
 - [Supervisor Mode](#supervisor-mode)
 - [Dependencies](#dependencies)
 - [Next Steps](#next-steps)
+
+## To Install
+* Git Clone the repository
+* Navigate to the folder where the repository exists using Git Bash or Terminal
+* Run the command `npm install` to download the required dependencies
+* Set up your own database in MySQL Workbench using the schemata and dummy values provided in database-schema.sql
+* Then run the desired mode using the command `node bamazonCustomer.js`, `node bamazonManager.js` or `node bamazonSupervisor.js`
+
 
 ## Customer Mode
 Using bamazonCustomer.js as an entry point, the customer can purchase items through Bamazon. The products and departments tables are updated when the customer makes a purchase.
